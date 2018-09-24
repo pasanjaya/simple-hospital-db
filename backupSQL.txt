@@ -1,0 +1,118 @@
+CREATE TABLE userlogin (
+    ID INT(4) NOT NULL PRIMARY KEY,
+    username varchar(255) NOT NULL,
+    password varchar(1000) NOT NULL,
+    loginType varchar(128) NOT NULL
+);
+
+
+
+CREATE TABLE physician (
+    phyID INT(4) NOT NULL PRIMARY KEY,
+    regNO INT(10) NOT NULL,
+    fname VARCHAR(128) NOT NULL,
+    lname VARCHAR(128) NOT NULL,
+    gender VARCHAR(6) NOT NULL,
+    address VARCHAR(128) NOT NULL,
+    contactNO VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE consultant (
+    consultID INT(4) NOT NULL PRIMARY KEY,
+    feild varchar(128),
+    grade varchar(128),
+    specialistFlag varchar(10),
+    leadConsultFlag varchar(10),
+    FOREIGN KEY (consultID) REFERENCES physician(phyID)
+);
+
+CREATE TABLE externalphy (
+    eConsultID INT(4) NOT NULL PRIMARY KEY,
+    certificateNO varchar(128),
+    FOREIGN KEY (eConsultID) REFERENCES physician(phyID)
+);
+
+CREATE TABLE paitent (
+    pID INT(4) NOT NULL PRIMARY KEY,
+    nic varchar(10),
+    fname varchar(128),
+    lname varchar(128),
+    dob date,
+    adderss varchar(500),
+    contactNO varchar(10),
+    refID INT(4),
+    CONSTRAINT FK_ ref FOREIGN KEY (refID) REFERENCES consultant(consultID)
+);
+
+CREATE TABLE ward (
+    wardNO INT(4) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    wardName varchar(255),
+    NoOfPaitents INT(3)
+);
+
+CREATE TABLE addmission (
+    addmissionNO INT(4) NOT NULL PRIMARY KEY,
+    admitDate date,
+    relationName varchar(128),
+    relationcontactNO varchar(10),
+    dischargeDate date,
+    reason varchar(11),
+    wardNO INT(4),
+    CONSTRAINT FK_wardNO FOREIGN KEY (wardNO) REFERENCES ward(wardNO)
+);
+
+CREATE TABLE test (
+    testID INT(4) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    testName varchar(255) NOT NULL,
+    description varchar(1000)
+);
+
+CREATE TABLE confirmedpaitent (
+    confirmedBY INT(4) NOT NULL,
+    pID INT(4) NOT NULL,
+    addmissionNO INT(4) NOT NULL,
+    CONSTRAINT PK_confirmedpaitent PRIMARY KEY (confirmedBY, pID, addmissionNO),
+    CONSTRAINT FK_confirmedBY FOREIGN KEY (confirmedBY) REFERENCES consultant(consultID),
+    CONSTRAINT FK_pID FOREIGN KEY (pID) REFERENCES paitent(pID),
+    CONSTRAINT FK_addmissionNO FOREIGN KEY (addmissionNO) REFERENCES addmission(addmissionNO)
+);
+
+
+CREATE TABLE recomendedpaitent (
+    recommendBY INT(4) NOT NULL,
+    pID INT(4) NOT NULL,
+    addmissionNO INT(4) NOT NULL,
+    CONSTRAINT PK_recomendedpaitent PRIMARY KEY (recommendBY, pID, addmissionNO),
+    CONSTRAINT FK_recommendBY FOREIGN KEY (recommendBY) REFERENCES externalphy(eConsultID),
+    CONSTRAINT FK_recPID FOREIGN KEY (pID) REFERENCES paitent(pID),
+    CONSTRAINT FK_recAddmissionNO FOREIGN KEY (addmissionNO) REFERENCES addmission(addmissionNO)
+);
+
+CREATE VIEW admittedList AS
+SELECT cp.confirmedBY, cp.pID, a.addmissionNO, a.admitDate, a.relationName, a.relationcontactNO, a.dischargeDate, a.reason, a.wardNO
+FROM addmission AS a, confirmedpaitent AS cp
+WHERE a.addmissionNO = cp.addmissionNO;
+
+
+CREATE TABLE testregister (
+    pID INT(4) NOT NULL,
+    testID INT(4) NOT NULL,
+    result VARCHAR(1000) NOT NULL,
+    CONSTRAINT PK_testregister PRIMARY KEY (pID, testID),
+    CONSTRAINT FK_trpID FOREIGN KEY (pID) REFERENCES paitent(pID),
+    CONSTRAINT FK_testID FOREIGN KEY (testID) REFERENCES test(testID)
+);
+
+CREATE VIEW phydetails AS
+SELECT phy.fname, phy.lname, phy.gender, phy.contactNO, c.field
+FROM physician AS phy, consultant AS c
+WHERE phy.phyID = c.consultID;
+
+
+CREATE VIEW paitentdetails AS
+SELECT p.fname, p.lname, p.dob, ad.admitDate, ad.dischargeDate, ad.reason, w.wardName
+FROM paitent AS p, confirmedpaitent AS cp, addmission AS ad, ward as w
+WHERE p.pID = cp.pID AND cp.addmissionNO = ad.addmissionNO AND ad.wardNO = w.wardNO;
+
+
+SELECT TIMESTAMPDIFF(YEAR,dob,CURDATE()) AS age FROM paitent;

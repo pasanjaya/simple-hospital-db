@@ -1,0 +1,44 @@
+<?php
+
+include 'header.php';
+
+/*if (isset($_SESSION['ID'])){
+  echo "<form action='include/logout.inc.php'>
+          <button>Log Out</button>
+        </form>";
+}*/
+?>
+
+
+<div class="container-fluid">
+  <div class="content ">
+
+    <div class="col-sm-9">
+      <div class="well">
+        <h3><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Add Test</h3>
+        <h4 class="listview"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span><a href="#section3"> Test List</a></h4>
+      </div>
+
+      <form action="include/addphysician.inc.php" method="POST">
+        <div class="form-group">
+          <label>Test ID</label>
+          <input type="number" name="testID" class="form-control"  placeholder="Test ID">
+        </div>
+                <div class="form-group">
+          <label>Test Name</label>
+          <input type="text" name="testName" class="form-control"  placeholder="Test Name">
+        </div>
+                               <button type="submit" class="btn btn-default">Submit</button>
+
+      </form>
+
+    </div>
+
+
+  </div>
+</div>
+
+<br /><br />
+
+</body>
+</html>

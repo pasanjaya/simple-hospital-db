@@ -1,0 +1,50 @@
+body {
+  padding-top: 50px;
+  margin: 0px;
+  height: 100%;
+  padding-bottom: 0px;
+  background-color: #FBFCFC;
+}
+/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+.content {
+  height: 450px;
+  width: auto;
+}
+
+/* Set gray background color and 100% height */
+.sidenav {
+  background-color: #1C2833;
+  height: 100%;
+  min-height: 1000px;
+  color: #7FB3D5;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+/* On small screens, set height to 'auto' for the grid */
+@media screen and (max-width: 767px) {
+.content {height: auto;}
+}
+
+.navbar-custom {
+    background-color:#1C2833;
+    color:#000;
+    border-radius:0;
+}
+
+.col-sm-9 .well img {
+  width: 1075px;
+  height: auto;
+}
+
+.nav-custom {
+  background-color:hsl(120,100%,50%);
+}
+
+.table-custom {
+  width: auto;
+  height: 100px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
